@@ -1,0 +1,34 @@
+---
+title: "p8131_stl2137_hw3"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+# Problem 1
+## Part 1
+```{r}
+### Data import and wrangling 
+case_dat <- tibble(
+  age = c(25, 35, 45, 55, 65, 75),
+  low_alc = c(0, 5, 21, 34, 36, 8),
+  high_alc = c(1, 4, 25, 42, 19, 5)
+)
+
+control_dat <- tibble(
+  age = c(25, 35, 24, 55, 65, 75),
+  low_alc = c(106, 164, 138, 139, 88, 31),
+  high_alc = c(9, 26, 29, 27, 18, 0)
+)
+
+#Let 1 = case, 0 = control
+alc_dat <- bind_rows(case_dat, control_dat, .id = "status") %>% 
+  mutate(
+    status = recode(status, "1" = "1", "2" = "0")
+  ) %>% 
+  select(age, status, low_alc, high_alc)
+```
+
