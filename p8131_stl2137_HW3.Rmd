@@ -11,24 +11,23 @@ library(tidyverse)
 # Problem 1
 ## Part 1
 ```{r}
-### Data import and wrangling 
-case_dat <- tibble(
-  age = c(25, 35, 45, 55, 65, 75),
-  low_alc = c(0, 5, 21, 34, 36, 8),
-  high_alc = c(1, 4, 25, 42, 19, 5)
-)
+### Data import and wrangling following class code
+# Exposed = high alc, unexposed = low alc
+case_expo = c(1, 4, 25, 42, 19, 5)
+cont_expo = c(9, 26, 29, 27, 18, 0)
+case_unexp = c(0, 5, 21, 34, 36, 8)
+cont_unexp = c(106, 164, 138, 139, 88, 31)
+cbind(case_expo, case_unexp, cont_expo, cont_unexp)
+age = c(25, 35, 45, 55, 65, 75, 25, 35, 45, 55, 65, 75)
 
-control_dat <- tibble(
-  age = c(25, 35, 24, 55, 65, 75),
-  low_alc = c(106, 164, 138, 139, 88, 31),
-  high_alc = c(9, 26, 29, 27, 18, 0)
-)
+# Cases = 1, Controls = 0
+x = c(1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0)
+y = cbind(c(case_expo, case_unexp), c(cont_expo, cont_unexp))
+```
 
-#Let 1 = case, 0 = control
-alc_dat <- bind_rows(case_dat, control_dat, .id = "status") %>% 
-  mutate(
-    status = recode(status, "1" = "1", "2" = "0")
-  ) %>% 
-  select(age, status, low_alc, high_alc)
+```{r}
+### Fiting model
+logit_alc = glm(y ~ x + age, family=binomial(link='logit'))
+summary(logit_alc)
 ```
 
