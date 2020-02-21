@@ -10,6 +10,7 @@ library(tidyverse)
 
 # Problem 1
 ## Part 1
+Fit a prospective model to the data to study the relation between alcohol consumption, age, and disease (model age as a continuous variable taking values 25, 35, 45, 55, 65, and 75). Interpret the result.
 ```{r}
 ### Data import and wrangling following class code
 # Exposed = high alc, unexposed = low alc
@@ -29,5 +30,48 @@ y = cbind(c(case_expo, case_unexp), c(cont_expo, cont_unexp))
 ### Fiting model
 logit_alc = glm(y ~ x + age, family=binomial(link='logit'))
 summary(logit_alc)
+```
+
+# Problem 2
+```{r}
+### Importing Data 
+### species_type: 75 = 1, 73 = 0; root_type: bean = 1, cucumber = 0
+orobanche_75_bean <- tibble(
+  success = c(10, 23, 23, 26, 17),
+  total = c(39, 62, 81, 51, 39)
+) %>% 
+  mutate(
+    species_type = c(1, 1, 1, 1, 1),
+    root_type = c(1, 1, 1, 1, 1)
+  )
+
+orobanche_75_cucumber <- tibble(
+  success = c(5, 53, 55, 32, 46, 10),
+  total = c(6, 74, 72, 51, 79, 13)
+) %>% 
+  mutate(
+    species_type = c(1, 1, 1, 1, 1, 1),
+    root_type = c(0, 0, 0, 0, 0, 0)
+  )
+
+orobanche_73_bean <- tibble(
+  success = c(8, 10, 8, 23, 0),
+  total = c(16, 30, 28, 45, 4)
+) %>% 
+  mutate(
+    species_type = c(0, 0, 0, 0, 0),
+    root_type = c(1, 1, 1, 1, 1)
+  )
+
+orobanche_73_cucumber <- tibble(
+  success = c(3, 22, 15, 32, 3),
+  total = c(12, 41, 30, 51, 7)  
+) %>% 
+  mutate(
+    species_type = c(0, 0, 0, 0, 0),
+    root_type = c(0, 0, 0, 0, 0)
+  )
+
+plant_dat <- bind_rows(orobanche_75_bean, orobanche_73_bean,orobanche_75_cucumber, orobanche_73_cucumber)
 ```
 
