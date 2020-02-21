@@ -75,3 +75,20 @@ orobanche_73_cucumber <- tibble(
 plant_dat <- bind_rows(orobanche_75_bean, orobanche_73_bean,orobanche_75_cucumber, orobanche_73_cucumber)
 ```
 
+## Part 1
+
+1. Fit a logistic regression model to study the relation between germination rates and different types of seed and root extract. Interpret the result.
+```{r}
+### Creating a suitable y variable to glm 
+rates <- cbind(plant_dat$success, plant_dat$total - plant_dat$success)
+
+### Fitting Logistic model
+logit_plant = glm(rates ~ species_type + root_type, family = binomial(link = 'logit'), data = plant_dat)
+
+summary(logit_plant)
+```
+
+```{r}
+
+```
+
