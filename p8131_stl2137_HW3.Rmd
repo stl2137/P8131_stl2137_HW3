@@ -10,7 +10,6 @@ library(tidyverse)
 
 # Problem 1
 ## Part 1
-Fit a prospective model to the data to study the relation between alcohol consumption, age, and disease (model age as a continuous variable taking values 25, 35, 45, 55, 65, and 75). Interpret the result.
 ```{r}
 ### Data import and wrangling following class code
 # Exposed = high alc, unexposed = low alc
@@ -31,6 +30,12 @@ y = cbind(c(case_expo, case_unexp), c(cont_expo, cont_unexp))
 logit_alc = glm(y ~ x + age, family=binomial(link='logit'))
 summary(logit_alc)
 ```
+
+The log odds of developing esophaegeal cancer is -5.023449 given the low alcohol consumption group. 
+
+The log odds ratio of developing esophaegeal cancer, holding age constant, is 1.78 when comparing the high alcohol consumption group to the low alcohol consumption group. 
+
+The log odds ratio of age is 0.061579 for every 1 year increase, holding all other variables constant. 
 
 # Problem 2
 ```{r}
@@ -87,8 +92,45 @@ logit_plant = glm(rates ~ species_type + root_type, family = binomial(link = 'lo
 
 summary(logit_plant)
 ```
+The log odds of germination is 0.3642 given the cucumber root extract media and Orobanche 73 are used. 
+
+`species_type` is an insignificant variable when $\alpha = 0.05$ with a p-value of 0.0804. The log odds ratio of germination is 0.2705 when comparing Orobanche 75 to Orobanche 73. 
+
+The log odds ratio of germination is -1.0647 when comparing bean root extract media to cucumber root extract media, holding all other variables constant. 
+
+## Part 2
 
 ```{r}
-
+### goodness of fit
+pval= 1 - pchisq(logit_plant$deviance, 21-2)
+pval 
 ```
 
+Since the p-value is < 0.05, we reject the null hypothesis and conclude that the model is a bad fit. 
+
+```{r}
+# Calculate Overdispersion parameter 
+G.stat = sum(residuals(logit_plant,type='pearson')^2) # pearson chisq 
+G.stat
+phi = G.stat/(21-2)
+phi
+tilde.phi = logit_plant$deviance/logit_plant$df.residual
+tilde.phi 
+
+res = residuals(logit_plant, type='pearson')
+plot(qnorm((21+1:21+0.5)/(2*21+1.125)),sort(abs(res)),xlab='Expected Half-Normal Order Stats',ylab='Ordered Abs Pearson Residuals')
+abline(a=0,b=1)
+abline(a=0,b=sqrt(phi),lty=2)
+```
+After calculating phi, we can see that phi is 2.016348, which is greater than 1, the dispersion parameter in the original model. 
+
+From the plot, we can also visually confirm there is overdispersion.  
+
+```{r}
+### fit model with constant over-dispersion
+summary(logit_plant, dispersion = phi)
+```
+
+## Part 3
+
+A plausible cause of over dispersion is that there is correlation between the individual data points collected on the germination of the two species of Orobanche seeds. 
