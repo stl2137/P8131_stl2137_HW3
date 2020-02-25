@@ -31,7 +31,7 @@ logit_alc = glm(y ~ x + age, family=binomial(link='logit'))
 summary(logit_alc)
 ```
 
-The log odds of developing esophaegeal cancer is -5.023449 given the low alcohol consumption group. 
+The log odds of developing esophaegeal cancer is -5.023449 given the low alcohol consumption group and in the 25-34 age group. 
 
 The log odds ratio of developing esophaegeal cancer, holding age constant, is 1.78 when comparing the high alcohol consumption group to the low alcohol consumption group. 
 
@@ -102,7 +102,7 @@ The log odds ratio of germination is -1.0647 when comparing bean root extract me
 
 ```{r}
 ### goodness of fit
-pval= 1 - pchisq(logit_plant$deviance, 21-2)
+pval= 1 - pchisq(logit_plant$deviance, 21-3)
 pval 
 ```
 
@@ -112,7 +112,7 @@ Since the p-value is < 0.05, we reject the null hypothesis and conclude that the
 # Calculate Overdispersion parameter 
 G.stat = sum(residuals(logit_plant,type='pearson')^2) # pearson chisq 
 G.stat
-phi = G.stat/(21-2)
+phi = G.stat/(21-3)
 phi
 tilde.phi = logit_plant$deviance/logit_plant$df.residual
 tilde.phi 
@@ -133,4 +133,4 @@ summary(logit_plant, dispersion = phi)
 
 ## Part 3
 
-A plausible cause of over dispersion is that there is correlation between the individual data points collected on the germination of the two species of Orobanche seeds. 
+A plausible cause of over dispersion is that there is correlation between the germination of the two species of Orobanche seeds and the root media. 
